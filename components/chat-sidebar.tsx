@@ -5,7 +5,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Plus, MessageSquare, Trash2, User, Settings } from "lucide-react";
+import {Plus, MessageSquare, Trash2, User, Settings, SunIcon, MoonIcon} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { useTheme } from "next-themes";
 
 // Type for chat history
 interface ChatSession {
@@ -41,6 +41,8 @@ export default function ChatSidebar({
 }: ChatSidebarProps) {
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
+  const onSwitchTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
   // Load chat sessions from localStorage on mount
   useEffect(() => {
@@ -153,6 +155,15 @@ export default function ChatSidebar({
             ))}
           </SidebarMenu>
         </ScrollArea>
+        <SidebarMenu>
+        <SidebarMenuItem className={"pl-3"}>
+          <SidebarMenuButton onClick={onSwitchTheme}>
+            <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span>Switch theme</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarContent>
 
       <SidebarFooter className="border-t p-3">
@@ -176,9 +187,6 @@ export default function ChatSidebar({
                 </div>
               </SidebarMenuButton>
             </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <ThemeToggle />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
