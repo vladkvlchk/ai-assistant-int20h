@@ -12,8 +12,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SidebarProvider defaultOpen={true}>
-        <Suspense fallback={null}>
+      <Suspense fallback={null}>
+        <SidebarProvider defaultOpen={true}>
           <NextThemesProvider
             attribute="class"
             defaultTheme="system"
@@ -21,8 +21,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
           >
             {children}
           </NextThemesProvider>
-        </Suspense>
-      </SidebarProvider>
+        </SidebarProvider>
+      </Suspense>
     </QueryClientProvider>
   );
 }

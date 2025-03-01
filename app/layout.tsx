@@ -23,12 +23,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers>
-          <div className="flex h-screen">
+        <div className="flex h-screen">
+          <Providers>
+            {/* <div> */}
             <ChatContainer />
             <main className="flex-1 overflow-auto">{children}</main>
-          </div>
-        </Providers>
+            {/* </div> */}
+          </Providers>
+        </div>
         <Toaster />
       </body>
     </html>
