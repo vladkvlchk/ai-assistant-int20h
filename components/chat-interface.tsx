@@ -9,53 +9,51 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import MessageList from "@/components/message-list";
-import { useQueryClient } from "@tanstack/react-query";
-import type { Message } from "ai";
+import { useMutation } from "@tanstack/react-query";
+import axiosInstance from "@/lib/axios";
 
 interface ChatInterfaceProps {
   chatId?: string | null;
 }
 
 export default function ChatInterface({ chatId }: ChatInterfaceProps) {
+  const [input, setInput] = useState<string>("");
+  const [messages, setMessages] = useState<any[]>([]); //TODO: type IMessageItem
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
   const [isMounted, setIsMounted] = useState(false);
 
-  // Initialize chat with saved messages if they exist
-  const initialMessages = chatId ? loadMessages(chatId) : [];
-
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    isLoading,
-    reload,
-    stop,
-  } = useChat({
-    id: chatId || undefined,
-    initialMessages,
-    onFinish: (message) => {
-      if (chatId) {
-        // Save the updated messages to localStorage
-        const updatedMessages = [...messages, message];
-        saveMessages(chatId, updatedMessages);
-
-        // Update the chat title based on the first user message
-        updateChatTitle(chatId, updatedMessages);
-      }
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ["messages", chatId],
+    mutationFn: async (message: { input: string; apps?: string[] }) => {
+      return axiosInstance.post("", { llm_request: message.input }) as Promise<{
+        response: { data: { message: string } };
+      }>;
+    },
+    onSuccess: (data: { response: { data: { message: string } } }) => {
+      console.log("success ", data);
+      const content = data.response.data.message;
+      setMessages((prev) => [...prev, { role: "", isSuccess: true, content }]);
+    },
+    onError: (data: { response: { data: { message: string } } }) => {
+      const content = data.response.data.message;
+      setMessages((prev) => [...prev, { role: "", isSuccess: false, content }]);
     },
   });
+
+  const handleInputChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ): void => {
+    setInput(e.target.value);
+  };
+
+  const { isLoading, reload } = useChat();
 
   // Scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-
-    // Save messages when they change
-    if (chatId && messages.length > 0) {
-      saveMessages(chatId, messages);
     }
   }, [messages, chatId]);
 
@@ -68,59 +66,16 @@ export default function ChatInterface({ chatId }: ChatInterfaceProps) {
     return null;
   }
 
-  // Load messages from localStorage
-  function loadMessages(chatId: string): Message[] {
-    try {
-      const saved = localStorage.getItem(`chat-messages-${chatId}`);
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.error("Failed to load messages:", error);
-      return [];
-    }
-  }
-
-  // Save messages to localStorage
-  function saveMessages(chatId: string, messages: Message[]) {
-    localStorage.setItem(`chat-messages-${chatId}`, JSON.stringify(messages));
-  }
-
-  // Update chat title based on the first user message
-  function updateChatTitle(chatId: string, messages: Message[]) {
-    const firstUserMessage = messages.find((m) => m.role === "user");
-    if (!firstUserMessage) return;
-
-    // Get chat sessions from localStorage
-    const savedSessions = localStorage.getItem("chatSessions");
-    if (!savedSessions) return;
-
-    try {
-      const sessions = JSON.parse(savedSessions);
-      const updatedSessions = sessions.map((session: any) => {
-        if (session.id === chatId) {
-          // Use first 30 chars of first message as title
-          const title =
-            firstUserMessage.content.length > 30
-              ? `${firstUserMessage.content.substring(0, 30)}...`
-              : firstUserMessage.content;
-          return { ...session, title };
-        }
-        return session;
-      });
-
-      localStorage.setItem("chatSessions", JSON.stringify(updatedSessions));
-    } catch (error) {
-      console.error("Failed to update chat title:", error);
-    }
-  }
-
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.trim() === "") return;
 
-    await handleSubmit(e);
-
-    // Invalidate queries to refresh data if needed
-    queryClient.invalidateQueries({ queryKey: ["chat-history"] });
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: input, isSuccess: true },
+    ]);
+    await mutateAsync({ input, apps: [] });
+    setInput("");
   };
 
   return (
