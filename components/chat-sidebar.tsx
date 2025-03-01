@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Plus, MessageSquare, Trash2, User, Settings } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Plus, MessageSquare, Trash2, User, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sidebar,
   SidebarContent,
@@ -18,49 +18,52 @@ import {
   SidebarMenuAction,
   SidebarFooter,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { toast } from "sonner"
-import { cn } from "@/lib/utils"
-import { ThemeToggle } from "@/components/theme-toggle"
+} from "@/components/ui/sidebar";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 // Type for chat history
 interface ChatSession {
-  id: string
-  title: string
-  createdAt: Date
+  id: string;
+  title: string;
+  createdAt: Date;
 }
 
 interface ChatSidebarProps {
-  activeChatId: string | null
-  setActiveChatId: (id: string | null) => void
+  activeChatId: string | null;
+  setActiveChatId: (id: string | null) => void;
 }
 
-export default function ChatSidebar({ activeChatId, setActiveChatId }: ChatSidebarProps) {
-  const [chatSessions, setChatSessions] = useState<ChatSession[]>([])
-  const router = useRouter()
+export default function ChatSidebar({
+  activeChatId,
+  setActiveChatId,
+}: ChatSidebarProps) {
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
+  const router = useRouter();
 
   // Load chat sessions from localStorage on mount
   useEffect(() => {
-    const savedSessions = localStorage.getItem("chatSessions")
+    const savedSessions = localStorage.getItem("chatSessions");
     if (savedSessions) {
       try {
-        const parsed = JSON.parse(savedSessions)
+        const parsed = JSON.parse(savedSessions);
         setChatSessions(
           parsed.map((session: any) => ({
             ...session,
             createdAt: new Date(session.createdAt),
-          })),
-        )
+          }))
+        );
       } catch (error) {
-        console.error("Failed to parse chat sessions:", error)
+        console.error("Failed to parse chat sessions:", error);
       }
     }
-  }, [])
+  }, []);
 
   // Save chat sessions to localStorage when they change
   useEffect(() => {
-    localStorage.setItem("chatSessions", JSON.stringify(chatSessions))
-  }, [chatSessions])
+    localStorage.setItem("chatSessions", JSON.stringify(chatSessions));
+  }, [chatSessions]);
 
   // Create a new chat session
   const createNewChat = () => {
@@ -68,40 +71,40 @@ export default function ChatSidebar({ activeChatId, setActiveChatId }: ChatSideb
       id: Date.now().toString(),
       title: `New Chat ${chatSessions.length + 1}`,
       createdAt: new Date(),
-    }
+    };
 
-    setChatSessions((prev) => [newChat, ...prev])
-    setActiveChatId(newChat.id)
-    router.push(`?id=${newChat.id}`)
-  }
+    setChatSessions((prev) => [newChat, ...prev]);
+    setActiveChatId(newChat.id);
+    router.push(`?id=${newChat.id}`);
+  };
 
   // Delete a chat session
   const deleteChat = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation()
+    e.stopPropagation();
 
-    setChatSessions((prev) => prev.filter((chat) => chat.id !== id))
+    setChatSessions((prev) => prev.filter((chat) => chat.id !== id));
 
     if (activeChatId === id) {
-      const remainingSessions = chatSessions.filter((chat) => chat.id !== id)
+      const remainingSessions = chatSessions.filter((chat) => chat.id !== id);
       if (remainingSessions.length > 0) {
-        setActiveChatId(remainingSessions[0].id)
-        router.push(`?id=${remainingSessions[0].id}`)
+        setActiveChatId(remainingSessions[0].id);
+        router.push(`?id=${remainingSessions[0].id}`);
       } else {
-        setActiveChatId(null)
-        router.push("/")
+        setActiveChatId(null);
+        router.push("/");
       }
     }
 
     toast.success("Chat deleted", {
       description: "The chat session has been removed",
-    })
-  }
+    });
+  };
 
   // Select a chat session
   const selectChat = (id: string) => {
-    setActiveChatId(id)
-    router.push(`?id=${id}`)
-  }
+    setActiveChatId(id);
+    router.push(`?id=${id}`);
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -114,7 +117,11 @@ export default function ChatSidebar({ activeChatId, setActiveChatId }: ChatSideb
 
       <SidebarContent>
         <div className="p-3">
-          <Button onClick={createNewChat} className="w-full justify-start gap-2" variant="outline">
+          <Button
+            onClick={createNewChat}
+            className="w-full justify-start gap-2"
+            variant="outline"
+          >
             <Plus size={16} />
             <span>New Chat</span>
           </Button>
@@ -127,7 +134,10 @@ export default function ChatSidebar({ activeChatId, setActiveChatId }: ChatSideb
                 <SidebarMenuButton
                   onClick={() => selectChat(chat.id)}
                   isActive={activeChatId === chat.id}
-                  className={cn("justify-start gap-2 w-full text-left", activeChatId === chat.id ? "bg-accent" : "")}
+                  className={cn(
+                    "justify-start gap-2 w-full text-left",
+                    activeChatId === chat.id ? "bg-accent" : ""
+                  )}
                 >
                   <MessageSquare size={16} />
                   <span className="truncate">{chat.title}</span>
@@ -148,22 +158,22 @@ export default function ChatSidebar({ activeChatId, setActiveChatId }: ChatSideb
       <SidebarFooter className="border-t p-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link href="/profile" passHref>
+            <Link href="/" passHref>
               <SidebarMenuButton asChild>
-                <a className="flex items-center gap-2">
+                <div>
                   <User size={16} />
                   <span>Profile</span>
-                </a>
+                </div>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/settings" passHref>
+            <Link href="/" passHref>
               <SidebarMenuButton asChild>
-                <a className="flex items-center gap-2">
+                <div>
                   <Settings size={16} />
                   <span>Settings</span>
-                </a>
+                </div>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
@@ -173,6 +183,5 @@ export default function ChatSidebar({ activeChatId, setActiveChatId }: ChatSideb
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
-
