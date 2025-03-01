@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import ChatSidebar from "@/components/chat-sidebar";
 import { useSearchParams } from "next/navigation";
 
@@ -15,11 +14,9 @@ export default function ChatContainer() {
   }, [searchParams]);
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <ChatSidebar
-        activeChatId={activeChatId}
-        setActiveChatId={setActiveChatId}
-      />
-    </SidebarProvider>
+    <ChatSidebar
+      activeChatId={activeChatId}
+      setActiveChatId={setActiveChatId}
+    />
   );
 }
