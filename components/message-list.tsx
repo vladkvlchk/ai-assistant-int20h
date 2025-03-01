@@ -1,11 +1,11 @@
-import type { Message } from "ai"
-import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Bot, User } from "lucide-react"
-import Markdown from "react-markdown"
+import type { Message } from "ai";
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Bot, User } from "lucide-react";
+import Markdown from "react-markdown";
 
 interface MessageListProps {
-  messages: Message[]
+  messages: any[];
 }
 
 export default function MessageList({ messages }: MessageListProps) {
@@ -14,9 +14,11 @@ export default function MessageList({ messages }: MessageListProps) {
       <div className="flex flex-col items-center justify-center h-full text-center p-8 text-zinc-500">
         <Bot className="h-12 w-12 mb-4 text-zinc-300" />
         <h3 className="text-lg font-medium mb-2">How can I help you today?</h3>
-        <p className="text-sm">Ask me anything and I'll do my best to assist you.</p>
+        <p className="text-sm">
+          Ask me anything and I'll do my best to assist you.
+        </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -24,9 +26,17 @@ export default function MessageList({ messages }: MessageListProps) {
       {messages.map((message) => (
         <div
           key={message.id}
-          className={cn("flex gap-3 text-sm", message.role === "user" ? "flex-row-reverse" : "flex-row")}
+          className={cn(
+            "flex gap-3 text-sm",
+            message.role === "user" ? "flex-row-reverse" : "flex-row"
+          )}
         >
-          <Avatar className={cn("h-8 w-8", message.role === "user" ? "bg-primary" : "bg-zinc-800")}>
+          <Avatar
+            className={cn(
+              "h-8 w-8",
+              message.role === "user" ? "bg-primary" : "bg-zinc-800"
+            )}
+          >
             {message.role === "user" ? (
               <>
                 <AvatarFallback>
@@ -46,7 +56,12 @@ export default function MessageList({ messages }: MessageListProps) {
           <div
             className={cn(
               "rounded-lg px-4 py-3 max-w-[80%]",
-              message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground",
+              message.role === "user"
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-foreground",
+              message.isSuccess
+                ? ""
+                : "text-red-500 bg-red-200 dark:bg-red-800 light:text-red-400"
             )}
           >
             <div className="prose prose-sm dark:prose-invert">
@@ -56,6 +71,5 @@ export default function MessageList({ messages }: MessageListProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }
-
