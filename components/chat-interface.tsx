@@ -3,7 +3,6 @@
 import type React from "react";
 
 import { useState, useRef, useEffect } from "react";
-import { useChat } from "ai/react";
 import { Loader2, Send, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -12,6 +11,26 @@ import MessageList from "@/components/message-list";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 import ServicesScroll from "@/components/app-widgets/services-scroll";
+
+interface ITrelloColumn {
+  cards?: any[];
+  items_amount: number;
+  name: string;
+}
+
+interface IErrorResponse {
+  response: { data: { message: string } };
+}
+
+interface ISuccessResponse {
+  data: {
+    task_type: "new-trello-board";
+    name: string;
+    data: ITrelloColumn[];
+    url: string;
+    result?: string;
+  };
+}
 
 interface ChatInterfaceProps {
   chatId?: string | null;
@@ -24,21 +43,48 @@ export default function ChatInterface({ chatId }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutateAsync, isPending: isLoading } = useMutation({
     mutationKey: ["messages", chatId],
+    //@ts-ignore
     mutationFn: async (message: { input: string; apps?: string[] }) => {
-      return axiosInstance.post("", { llm_request: message.input }) as Promise<{
-        response: { data: { message: string } };
-      }>;
+      return axiosInstance.post("", {
+        llm_request: message.input,
+      }) as Promise<IErrorResponse | ISuccessResponse>;
     },
-    onSuccess: (data: { response: { data: { message: string } } }) => {
+    onSuccess: (data: ISuccessResponse) => {
       console.log("success ", data);
-      const content = data.response.data.message;
-      setMessages((prev) => [...prev, { role: "", isSuccess: true, content }]);
+      const task_type = data.data.task_type;
+      if (data.data.result) {
+        return setMessages((prev) => [
+          ...prev,
+          { role: "agent", isSuccess: true, content: data.data.result },
+        ]);
+      }
+      if (task_type === "new-trello-board") {
+        return setMessages((prev) => [
+          ...prev,
+          {
+            role: "agent",
+            isSuccess: true,
+            content: `Congrats! New Trello board "${data.data.name}" was created`,
+            widgets: [
+              {
+                type: "trello-board-columns",
+                name: data.data.name,
+                url: data.data.url,
+                data: data.data.data,
+              },
+            ],
+          },
+        ]);
+      }
     },
-    onError: (data: { response: { data: { message: string } } }) => {
+    onError: (data: IErrorResponse) => {
       const content = data.response.data.message;
-      setMessages((prev) => [...prev, { role: "", isSuccess: false, content }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "agent", isSuccess: false, content },
+      ]);
     },
   });
 
@@ -50,16 +96,12 @@ export default function ChatInterface({ chatId }: ChatInterfaceProps) {
     setInput(e.target.value);
   };
 
-  const { isLoading, reload } = useChat();
-
-  // Scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, chatId]);
 
-  // Prevent hydration issues
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -79,7 +121,7 @@ export default function ChatInterface({ chatId }: ChatInterfaceProps) {
     await mutateAsync({ input, apps: [] });
     setInput("");
   };
-
+  
   const onServiceToggle = (name: string) => {
     if (services.includes(name)) {
       setServices((prev) => prev.filter((service) => service !== name));
