@@ -3,7 +3,7 @@
 import React, { FC } from "react";
 import { ChatWidgetWrapper } from "./chat-widget-wrapper";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import { EllipsisIcon } from "lucide-react";
+import {EllipsisIcon, TrelloIcon} from "lucide-react";
 import { Button } from "../ui/button";
 
 interface ITrelloColumn {
@@ -48,7 +48,7 @@ export const TrelloBoardColumns: FC<ITrelloBoardColumns> = ({
   };
 
   return (
-    <ChatWidgetWrapper app_name="trello">
+    <ChatWidgetWrapper icon={<TrelloIcon/>} app_name="trello">
       <div onClick={openUrlInNewTab} className="cursor-pointer">
         <CardHeader className="dark:text-neutral-400 text-neutral-600">
           {name}
