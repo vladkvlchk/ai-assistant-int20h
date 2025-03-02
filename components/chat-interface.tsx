@@ -81,6 +81,7 @@ export default function ChatInterface({ chatId }: ChatInterfaceProps) {
       if (task_type === "new-purchase") {
         return setMessages((prev) => [
           ...prev,
+
           {
             role: "agent",
             isSuccess: true,
