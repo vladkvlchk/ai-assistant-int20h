@@ -14,8 +14,6 @@ interface ITrelloColumn {
 
 export interface ITrelloBoardColumns {
   name: string;
-  success: boolean;
-  task_type?: string;
   url?: string;
   data: ITrelloColumn[];
 }
@@ -56,13 +54,14 @@ export const TrelloBoardColumns: FC<ITrelloBoardColumns> = ({
           {name}
         </CardHeader>
         <div className="p-4 flex overflow-x-scroll flex-nowrap gap-3">
-          {data.map((col, i) => (
-            <TrelloColumn
-              name={col.name}
-              key={col.name + i}
-              items_amount={col.items_amount}
-            />
-          ))}
+          {data &&
+            data.map((col, i) => (
+              <TrelloColumn
+                name={col.name}
+                key={col.name + i}
+                items_amount={col.items_amount}
+              />
+            ))}
         </div>
       </div>
     </ChatWidgetWrapper>

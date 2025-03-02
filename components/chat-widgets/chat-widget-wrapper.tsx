@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 export type TAppName = "trello" | "telegram";
 
 export const ChatWidgetWrapper: FC<{
-  children: ReactNode;
+  children: any;
   app_name: TAppName;
   icon?: ReactNode;
 }> = ({ children, app_name, icon}) => {
