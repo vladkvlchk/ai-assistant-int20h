@@ -1,5 +1,6 @@
 import { TrelloBoardColumns } from "@/components/chat-widgets/trello-board-columns";
 import TelegramMessage from "@/components/chat-widgets/telegram-message";
+import TrelloTask from "@/components/chat-widgets/trello-task";
 
 export default function DiscoverWidgetsPage() {
   return (
@@ -39,6 +40,7 @@ export default function DiscoverWidgetsPage() {
           recipient_name={"Tramp Bidenovsky"}
           text="повідомленняповідомленняповідомленняповідомлення"
       />
+      <TrelloTask/>
     </div>
   );
 }
