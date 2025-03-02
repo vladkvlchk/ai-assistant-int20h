@@ -171,23 +171,34 @@ export default function ChatInterface({ chatId }: ChatInterfaceProps) {
           </CardContent>
 
           <CardFooter className="border-t p-4 bg-background flex flex-col gap-3">
-            <form onSubmit={onSubmit} className="flex w-full gap-2">
-              <Input
-                value={input}
-                onChange={handleInputChange}
-                placeholder="Type your message..."
-                className="flex-1"
-                disabled={isLoading}
-              />
-              <Button type="submit" disabled={isLoading || input.trim() === ""}>
-                {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-                <span className="sr-only">Send message</span>
-              </Button>
-            </form>
+            {messages.length &&
+            messages[messages.length - 1] &&
+            messages[messages.length - 1]?.widgets &&
+            messages[messages.length - 1]?.widgets.length &&
+            messages[messages.length - 1]?.widgets[0].type === "submit-form" ? (
+              <Button className="w-full">Submit</Button>
+            ) : (
+              <form onSubmit={onSubmit} className="flex w-full gap-2">
+                <Input
+                  value={input}
+                  onChange={handleInputChange}
+                  placeholder="Type your message..."
+                  className="flex-1"
+                  disabled={isLoading}
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading || input.trim() === ""}
+                >
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                  <span className="sr-only">Send message</span>
+                </Button>
+              </form>
+            )}
             <ServicesScroll
               onServiceToggle={onServiceToggle}
               activeServices={services}
