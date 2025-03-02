@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bot, User } from "lucide-react";
 import Markdown from "react-markdown";
 import { TrelloBoardColumns } from "./chat-widgets/trello-board-columns";
+import FillForm from "./chat-widgets/fill-form";
 
 interface MessageListProps {
   messages: any[];
@@ -75,6 +76,41 @@ export default function MessageList({ messages }: MessageListProps) {
             message.widgets.map((widget: any, i: number) => {
               if (widget.type === "trello-board-columns" && widget.name) {
                 return <TrelloBoardColumns key={widget.url + i} {...widget} />;
+              }
+              if (widget.type === "submit-form") {
+                return (
+                  <FillForm
+                    title={widget.name}
+                    fields={[
+                      {
+                        type: "text",
+                        name: "address",
+                        label: "Address",
+                        placeholder: "Enter your address",
+                        value: widget.address,
+                      },
+                      {
+                        type: "email",
+                        name: "email",
+                        label: "Email",
+                        placeholder: "example@email",
+                      },
+                      {
+                        type: "textarea",
+                        name: "comment",
+                        label: "Comment",
+                        placeholder: "Tell us more...",
+                      },
+                      {
+                        type: "select",
+                        name: "size (US)",
+                        label: "Size",
+                        placeholder: "Pick a size",
+                        options: ["7", "7,5", "8", "8,5", "9", "9,5", "10"],
+                      },
+                    ]}
+                  />
+                );
               }
               return <></>;
             })}
