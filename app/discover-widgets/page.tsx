@@ -2,6 +2,8 @@
 
 import { TrelloBoardColumns } from "@/components/chat-widgets/trello-board-columns";
 import TelegramMessage from "@/components/chat-widgets/telegram-message";
+import ShopifyProductList from "@/components/chat-widgets/shopify-product-list";
+import TrelloTask from "@/components/chat-widgets/trello-task";
 import FillForm from "@/components/chat-widgets/fill-form";
 
 export default function DiscoverWidgetsPage() {
@@ -53,6 +55,15 @@ export default function DiscoverWidgetsPage() {
           },
         ]}
       />
+      <ShopifyProductList products={[{
+        name: "Adidas Ultraboost Shoes",
+        brand: "Adidas",
+        price: 120,
+        rating: 3,
+        reviews: 12,
+        description: "The Adidas Ultraboost shoes are the best running shoes you can find. They are comfortable, stylish, and durable. They are perfect for long runs, short runs, and everything in between. The Adidas Ultraboost shoes are the best running shoes you can find. They are comfortable, stylish, and durable. They are perfect for long runs, short runs, and everything in between."
+      }]}/>
+      <TrelloTask/>
     </div>
   );
 }
