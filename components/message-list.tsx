@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bot, User } from "lucide-react";
 import Markdown from "react-markdown";
+import { TrelloBoardColumns } from "./chat-widgets/trello-board-columns";
 
 interface MessageListProps {
   messages: any[];
@@ -23,52 +24,61 @@ export default function MessageList({ messages }: MessageListProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      {messages.map((message) => (
-        <div
-          key={message.id}
-          className={cn(
-            "flex gap-3 text-sm",
-            message.role === "user" ? "flex-row-reverse" : "flex-row"
-          )}
-        >
-          <Avatar
-            className={cn(
-              "h-8 w-8",
-              message.role === "user" ? "bg-primary" : "bg-zinc-800"
-            )}
-          >
-            {message.role === "user" ? (
-              <>
-                <AvatarFallback>
-                  <User className="h-4 w-4" />
-                </AvatarFallback>
-                <AvatarImage src="/placeholder.svg?height=32&width=32" />
-              </>
-            ) : (
-              <>
-                <AvatarFallback>
-                  <Bot className="h-4 w-4" />
-                </AvatarFallback>
-                <AvatarImage src="/placeholder.svg?height=32&width=32" />
-              </>
-            )}
-          </Avatar>
+      {messages.map((message, i) => (
+        <>
           <div
+            key={message.content + i}
             className={cn(
-              "rounded-lg px-4 py-3 max-w-[80%]",
-              message.role === "user"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-foreground",
-              message.isSuccess
-                ? ""
-                : "text-red-500 bg-red-200 dark:bg-red-800 light:text-red-400"
+              "flex flex-col gap-3 text-sm",
+              message.role === "user" ? "flex-row-reverse" : "flex-row"
             )}
           >
-            <div className="prose prose-sm dark:prose-invert">
-              <Markdown>{message.content}</Markdown>
+            <Avatar
+              className={cn(
+                "h-8 w-8",
+                message.role === "user" ? "bg-primary" : "bg-zinc-800"
+              )}
+            >
+              {message.role === "user" ? (
+                <>
+                  <AvatarFallback>
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                  <AvatarImage src="/placeholder.svg?height=32&width=32" />
+                </>
+              ) : (
+                <>
+                  <AvatarFallback>
+                    <Bot className="h-4 w-4" />
+                  </AvatarFallback>
+                  <AvatarImage src="/placeholder.svg?height=32&width=32" />
+                </>
+              )}
+            </Avatar>
+            <div
+              className={cn(
+                "rounded-lg px-4 py-3 max-w-[80%]",
+                message.role === "user"
+                  ? "bg-blue-200 dark:bg-blue-500 text-white"
+                  : "bg-muted text-foreground",
+                message.isSuccess
+                  ? ""
+                  : "text-red-500 bg-red-200 dark:bg-red-800 light:text-red-400"
+              )}
+            >
+              <div className="prose prose-sm dark:prose-invert">
+                <Markdown>{message.content}</Markdown>
+              </div>
             </div>
           </div>
-        </div>
+          {message.widgets &&
+            message.widgets.map((widget: any, i: number) => {
+              if (widget.type === "trello-board-columns" && widget.name) {
+                return <TrelloBoardColumns key={widget.url + i} {...widget} />;
+              }
+              return <></>;
+            })}
+        </>
       ))}
     </div>
   );

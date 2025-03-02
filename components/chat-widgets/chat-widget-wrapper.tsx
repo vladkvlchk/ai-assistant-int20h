@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 export type TAppName = "trello" | "telegram";
 
 export const ChatWidgetWrapper: FC<{
-  children: ReactNode;
+  children: any;
   app_name: TAppName;
 }> = ({ children, app_name }) => {
   return (
@@ -16,9 +16,7 @@ export const ChatWidgetWrapper: FC<{
           {app_name}
         </div>
       </CardHeader>
-      <CardContent className="p-2">
-        {children}
-      </CardContent>
+      <CardContent className="p-2">{children}</CardContent>
     </Card>
   );
 };

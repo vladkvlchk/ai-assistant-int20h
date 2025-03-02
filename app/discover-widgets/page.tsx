@@ -5,7 +5,6 @@ export default function DiscoverWidgetsPage() {
     <div className="grid grid-cols-1 p-4">
       <TrelloBoardColumns
         name={"Homeworks & family"}
-        success={true}
         url="https://google.com"
         data={[
           {
