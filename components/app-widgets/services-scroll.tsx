@@ -2,19 +2,8 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
-  Mail,
   MessageCircle,
   Trello,
-  Calendar,
-  FileText,
-  Image,
-  Music,
-  Video,
-  Settings,
-  Home,
-  Phone,
-  Share2,
-  Search,
 } from "lucide-react"
 
 export default function ServicesScroll(props: {
@@ -22,13 +11,12 @@ export default function ServicesScroll(props: {
   activeServices: string[],
 }) {
   const services = [
-    { name: "Telegram", icon: <MessageCircle className="h-4 w-4 mr-2" /> },
-    { name: "Gmail", icon: <Mail className="h-4 w-4 mr-2" /> },
     { name: "Trello", icon: <Trello className="h-4 w-4 mr-2" /> },
+    { name: "Telegram", icon: <MessageCircle className="h-4 w-4 mr-2" /> },
   ]
 
   return (
-      <Card className="p-2 mx-auto h-10 flex items-center">
+      <Card className="p-2 w-full mx-auto border-0 h-10 flex items-center">
         <ScrollArea className="w-full">
           <div className="flex space-x-2">
             {services.map((service) => {
