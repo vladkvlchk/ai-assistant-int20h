@@ -1,4 +1,4 @@
-import type { Message } from "ai";
+import React from "react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bot, User } from "lucide-react";
@@ -26,7 +26,7 @@ export default function MessageList({ messages }: MessageListProps) {
   return (
     <div className="flex flex-col gap-6">
       {messages.map((message, i) => (
-        <>
+        <React.Fragment key={message.content + i}>
           <div
             key={message.content + i}
             className={cn(
@@ -80,7 +80,8 @@ export default function MessageList({ messages }: MessageListProps) {
               if (widget.type === "submit-form") {
                 return (
                   <FillForm
-                    title={widget.name}
+                    key={i}
+                    title={widget.item}
                     fields={[
                       {
                         type: "text",
@@ -114,7 +115,7 @@ export default function MessageList({ messages }: MessageListProps) {
               }
               return <></>;
             })}
-        </>
+        </React.Fragment>
       ))}
     </div>
   );

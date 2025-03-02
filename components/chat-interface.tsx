@@ -52,7 +52,7 @@ export default function ChatInterface({ chatId }: ChatInterfaceProps) {
       }) as Promise<IErrorResponse | ISuccessResponse>;
     },
     onSuccess: (data: ISuccessResponse) => {
-      console.log("success ", data);
+      console.log(data);
       const task_type = data.data.task_type;
       if (data.data.result) {
         return setMessages((prev) => [
@@ -78,10 +78,10 @@ export default function ChatInterface({ chatId }: ChatInterfaceProps) {
           },
         ]);
       }
-      if (task_type === "new-purchase") {
+      if (data.data.task === "new-purchase") {
+        console.log("new-purchase");
         return setMessages((prev) => [
           ...prev,
-
           {
             role: "agent",
             isSuccess: true,
@@ -89,10 +89,10 @@ export default function ChatInterface({ chatId }: ChatInterfaceProps) {
             widgets: [
               {
                 type: "submit-form",
-                address: data.data.purchase_address,
-                title: data.data.purchase_item,
-                item: data.data.purchase_from,
-                amount: data.data.purchase_amount_of_items,
+                address: data.data.purchase_address || "",
+                title: data.data.purchase_item || "",
+                item: data.data.purchase_from || "",
+                amount: data.data.purchase_amount_of_items || "",
               },
             ],
           },
