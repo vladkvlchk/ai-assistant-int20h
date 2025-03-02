@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
-  MessageCircle,
+  MessageCircle, ShoppingBagIcon,
   Trello,
 } from "lucide-react"
 
@@ -13,6 +13,7 @@ export default function ServicesScroll(props: {
   const services = [
     { name: "Trello", icon: <Trello className="h-4 w-4 mr-2" /> },
     { name: "Telegram", icon: <MessageCircle className="h-4 w-4 mr-2" /> },
+    { name: "Shopify", icon: <ShoppingBagIcon className="h-4 w-4 mr-2" /> },
   ]
 
   return (

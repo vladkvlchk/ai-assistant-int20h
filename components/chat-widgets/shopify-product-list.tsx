@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Star } from "lucide-react"
+import img from "../../public/trainers_placeholder.webp"
 
 export interface IProductCard {
   image?: string;
@@ -26,14 +27,14 @@ export default function ShopifyProductList(props: {products: IProductCard[] }) {
   );
 }
 
- function ProductCard(props: IProductCard) {
+function ProductCard(props: IProductCard) {
   return (
       <div className="flex items-center text-neutral-500 justify-center min-h-[400px] p-4">
         <Card className="w-full max-w-sm overflow-hidden transition-all hover:shadow-lg">
           <div className="relative h-60 bg-gray-100">
             <Badge className="absolute top-2 right-2 z-10">New</Badge>
             <Image
-                src={props.image || "/images/placeholder.jpg"}
+                src={props.image || img.src}
                 alt="Adidas Ultraboost Shoes"
                 fill
                 className="object-cover"
@@ -57,7 +58,7 @@ export default function ShopifyProductList(props: {products: IProductCard[] }) {
             </div>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground max-h-32 overflow-hidden text-ellipsis line-clamp-5">
               {props.description}
             </p>
           </CardContent>
@@ -66,7 +67,8 @@ export default function ShopifyProductList(props: {products: IProductCard[] }) {
           </CardFooter>
         </Card>
       </div>
-  )
+  );
 }
+
 
 
